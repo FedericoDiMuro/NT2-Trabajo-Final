@@ -1,0 +1,6 @@
+export var miMixinLocal = {
+    computed: {
+        
+    }
+}
+  
