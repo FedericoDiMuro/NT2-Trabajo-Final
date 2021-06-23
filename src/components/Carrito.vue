@@ -1,16 +1,15 @@
 <template>
-  <section class="src-components-inicio">
+  <section class="src-components-carrito">
     <div class="jumbotron">
-      <h1>Productos</h1>
+      <h1>Mi carrito</h1>
     </div>
   </section>
-
 </template>
 
 <script lang="js">
 
   export default  {
-    name: 'src-components-inicio',
+    name: 'src-components-carrito',
     props: [],
     mounted () {
 
@@ -32,9 +31,10 @@
 </script>
 
 <style scoped lang="css">
-  .src-components-inicio {
+  .src-components-carrito {
 
   }
+  
   .jumbotron {
   
   }

@@ -1,12 +1,7 @@
 <template>
-  <div id="app">
-    <div class="jumbotron">
-      <h1>Trabajo práctico final - sitio de compras</h1>
-      <br>
-      
-      <Navbar />
-      <router-view></router-view>
-    </div>
+  <div id="app" >
+    <Navbar />
+    <router-view></router-view>
   </div>
 </template>
 
@@ -31,7 +26,6 @@ export default {
   }
   
   .jumbotron {
-    padding-top: 48px !important;
-    padding-bottom: 48px !important;
+
   }
 </style>
