@@ -7,10 +7,12 @@
         <p class="card-text" style="">{{product.descripcion}}</p>
       </div>
       <div v-if="product.stock != 0" class="card-footer text-right">
+        <!--Mostar cantidad de stock --> 
+        <!-- <p class="text-left" style="">Stock: {{product.stock}}</p> --> 
         <a class="btn btn-primary" @click="addToCart(product)">Agregar al carrito</a>
       </div>
       <div v-else class="card-footer text-right">
-        <a class="btn btn-primary disabled">No hay mas stock</a>
+        <a class="btn btn-primary disabled">Sin stock</a>
       </div>
     </div>
 </template>

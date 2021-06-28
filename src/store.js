@@ -24,7 +24,8 @@ export default new Vuex.Store({
                 image: product.imagen,
                 description: product.descripcion,
                 price: product.precio,
-                cant: 1
+                cant: 1,
+                stockMax: product.stock
             }
             if(!prod){
                 state.productsInCart.push(item)
