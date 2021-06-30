@@ -13,6 +13,9 @@ export default new Vuex.Store({
         },
         clearCart({commit}){
             commit('clear')
+        },
+        deleteProduct({commit}, index){
+            commit('delete', index)
         }
     },
     mutations: {
@@ -37,6 +40,9 @@ export default new Vuex.Store({
         },
         clear(state){
             state.productsInCart = []
+        },
+        delete(state, index){
+            state.productsInCart.splice(index, 1)
         }
     }
 })

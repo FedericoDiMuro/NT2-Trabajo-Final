@@ -6,13 +6,10 @@
         <h6 class="card-subtitle mb-2 text-muted">$ {{product.precio}}</h6>
         <p class="card-text" style="">{{product.descripcion}}</p>
       </div>
-      <div v-if="product.stock != 0" class="card-footer text-right">
-        <!--Mostar cantidad de stock --> 
-        <!-- <p class="text-left" style="">Stock: {{product.stock}}</p> --> 
-        <a class="btn btn-primary" @click="addToCart(product)">Agregar al carrito</a>
-      </div>
-      <div v-else class="card-footer text-right">
-        <a class="btn btn-primary disabled">Sin stock</a>
+      <div  class="card-footer">
+        <p class="text-secondary" style="float: left;"><i>Stock: {{product.stock}}</i></p> 
+        <button v-if="product.stock != 0" style="float: right;" class="btn btn-primary" type="button" @click="addToCart(product)">Agregar al carrito</button>
+        <button v-else style="float: right;" class="btn btn-primary" type="button" disabled>Sin stock</button>
       </div>
     </div>
 </template>

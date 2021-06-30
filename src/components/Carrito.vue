@@ -10,7 +10,7 @@
           <div class=" media alert customCard" v-for="(product, index) in getProductsInCart" :key="index">
             <img :src="product.image" width="150" :alt="product.name">
             <div class="media-body ml-3">
-              <button class="btn btn-danger ml-3 float-right" @click="borrar(index)">x</button>
+              <button class="btn btn-danger ml-3 float-right" @click="deleteProduct(index)">x</button>
               <h5><u>{{ product.name }}</u></h5>
               <br>
               <p>{{product.description}}</p>
@@ -36,7 +36,7 @@
           </div>
         </div>
         
-        <div class="col-md-4">
+        <div class="col-md-3">
           <br>
           <br>
           <div class="media total rounded-sm">
@@ -44,14 +44,16 @@
               <br>
               <h4><b>Total del carrito</b></h4>
               <hr>
-              
-                <p>A pagar</p>
-                <h5>$ {{totalCarrito}}</h5>
-              
-              
-              
-                <button class="btn btn-success ">Realizar compra</button>
-              
+              <div class="row mx-md-n3">
+                <div class="px-md-2"><div class="p-2">Cantidad de productos seleccionados:</div></div>
+                <div class="px-md-2"><div class="p-2"><i>{{cantidadTotal}}</i></div></div>
+                <div class="px-md-2"><div class="p-2">Total a pagar:</div></div>
+                <div class="px-md-2"><div class="p-2"><h5>$ {{totalCarrito}}</h5></div></div>
+              </div>
+              <hr>
+              <div class="text-center">
+                <button class="btn btn-success">Realizar compra</button>
+              </div>          
             </div>
           </div>
         </div>
@@ -84,6 +86,9 @@
     methods: {
       clearCart(){
         this.$store.dispatch('clearCart')
+      },
+      deleteProduct(index){
+        this.$store.dispatch('deleteProduct', index)
       }
     },
     computed: {
