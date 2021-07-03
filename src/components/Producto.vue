@@ -3,7 +3,7 @@
       <img class="card-img-top" :src="product.imagen" alt="Card image cap">
       <div class="card-body">
         <h5 class="card-title">{{product.nombre}}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">$ {{product.precio}}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">{{product.precio | moneda}}</h6>
         <p class="card-text" style="">{{product.descripcion}}</p>
       </div>
       <div  class="card-footer">

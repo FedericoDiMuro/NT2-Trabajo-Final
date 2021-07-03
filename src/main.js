@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './form'
 import './httpClient'
 import './globalMixins'
+import './globalFilters'
 
 import { router } from './routes'
 import store from './store'

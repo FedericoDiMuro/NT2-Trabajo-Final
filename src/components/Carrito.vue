@@ -48,7 +48,7 @@
                 <div class="px-md-2"><div class="p-2">Cantidad de productos seleccionados:</div></div>
                 <div class="px-md-2"><div class="p-2"><i>{{cantidadTotal}}</i></div></div>
                 <div class="px-md-2"><div class="p-2">Total a pagar:</div></div>
-                <div class="px-md-2"><div class="p-2"><h5>$ {{totalCarrito}}</h5></div></div>
+                <div class="px-md-2"><div class="p-2"><h5>{{totalCarrito | moneda}}</h5></div></div>
               </div>
               <hr>
               <div class="text-center">
