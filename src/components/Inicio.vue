@@ -26,7 +26,7 @@
     },
     data () {
       return {
-        productsUrl: 'https://60af31f85b8c300017debe4c.mockapi.io/Productos',
+        productsUrl: 'https://60af31f85b8c300017debe4c.mockapi.io/Productos/',
         products: []
       }
     },
