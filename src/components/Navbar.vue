@@ -4,7 +4,6 @@
       <router-link to = "/">
         <a class="navbar-brand" href="#">Inicio</a>
       </router-link>
-     
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -28,12 +27,19 @@
           </li>
         </ul>
       </div>
+      <div class="col-3">
+        <div class="input-group">
+          <input class="form-control" type="text" id="inputSearchName" placeholder="Buscar producto...">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button">Buscar</button>
+          </div>
+        </div>
+      </div>
     </nav>
   </section>
 </template>
 
 <script lang="js">
-
   export default  {
     name: 'src-components-navbar',
     props: [],
@@ -53,14 +59,11 @@
         return this.$store.state.productsInCart.length
       }
     }
-}
-
-
+  }
 </script>
 
 <style scoped lang="css">
   .src-components-navbar {
 
   }
-
 </style>
