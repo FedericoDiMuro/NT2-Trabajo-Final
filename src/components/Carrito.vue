@@ -10,8 +10,10 @@
           <div class=" media alert customCard" v-for="(product, index) in getProductsInCart" :key="index">
             <img :src="product.image" width="150" :alt="product.name">
             <div class="media-body ml-3">
-              <button class="btn btn-danger ml-3 float-right" @click="deleteProduct(index)">x</button>
+              <button class="btn btn-danger ml-3 float-right" @click="deleteProduct(index)">x</button>              
+              <router-link v-bind:to="'/Detalle/'+product.id">               
               <h5><u>{{ product.name }}</u></h5>
+              </router-link>
               <br>
               <p>{{product.description}}</p>
               <p>Precio $ <b>{{product.price}}</b></p>
@@ -94,7 +96,7 @@
     computed: {
       getProductsInCart(){
         return this.$store.state.productsInCart
-      }
+      },
     }
 }
 
