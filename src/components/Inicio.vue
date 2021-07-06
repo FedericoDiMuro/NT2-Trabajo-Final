@@ -4,8 +4,13 @@
       <div v-if="loading">
         <Loading />
       </div>
-      <div v-else class="row m-md-n3">
+      <div v-else-if="products.length > 0" class="row m-md-n3">
         <Producto v-for="(item,id) in products" :key="id" :product="item"/>
+      </div>
+      <div v-else>
+        <p class="alert alert-danger">
+          No se encontraron productos!
+        </p>
       </div>
     </div>
   </section>

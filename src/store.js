@@ -22,15 +22,12 @@ export default new Vuex.Store({
                 console.log('Error Axios ->', e)
             }
         },
-        async getProducts({ commit, state }) {
+        async getProducts({ commit, state }, search = '') {
             state.loading = !state.loading;
             try {
-                const response = await axios.get(`${process.env.VUE_APP_URL_API}/Productos/`);
-
-                if (response.data.length !== 0) {
-                    state.loading = !state.loading;
-                    commit('setProducts', response.data);
-                }
+                const response = await axios.get(`${process.env.VUE_APP_URL_API}/Productos/?search=${search}`);
+                state.loading = !state.loading;
+                commit('setProducts', response.data);
             } catch (e) {
                 console.log('Error Axios ->', e)
             }
