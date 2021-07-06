@@ -36,7 +36,7 @@ export default new Vuex.Store({
         },
         async createProduct({ commit }, product) {
             try {
-                const respuesta = await this.axios.post(`${process.env.VUE_APP_URL_API}/Productos/`, product, {'content-type':'application/json'})
+                const respuesta = await axios.post(`${process.env.VUE_APP_URL_API}/Productos/`, product, {'content-type':'application/json'})
                 const prod = respuesta.data
                 commit('createProduct', prod)
             } catch (e) {
@@ -45,7 +45,7 @@ export default new Vuex.Store({
         },
         async editProduct({ commit, state }, product){
             try{
-                const respuesta = await this.axios.put(`${process.env.VUE_APP_URL_API}/Productos/${product.id}`, product, {'content-type':'application/json'})
+                const respuesta = await axios.put(`${process.env.VUE_APP_URL_API}/Productos/${product.id}`, product, {'content-type':'application/json'})
                 const prod = respuesta.data
                 const index = state.products.findIndex(p => p.id == prod.id)
                 commit('editProduct', { data: prod, index })
