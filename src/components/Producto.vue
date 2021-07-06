@@ -1,7 +1,6 @@
 <template>
   <div class="col-md-3 p-md-3">
     <div class="card">
-      <Detalle v-if="condition" :product="product" />
       <router-link :to="{name:'Detalle',params:{id: product.id}}">
         <img class="card-img-top" :src="product.imagen" alt="Card image cap" />
       </router-link>
@@ -40,21 +39,13 @@
 </template>
 
 <script lang="js">
-  import Detalle from './Detalle.vue'
   export default  {
     name: 'src-components-producto',
-    components : {
-      Detalle
-    },
+    components : {},
     props: {
       product: Object,
     },
     mounted () {
-    },
-    data () {
-      return {
-        condition: false
-      }
     },
     methods: {
       addToCart(product){

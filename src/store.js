@@ -7,10 +7,21 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         loading: false,
+        selectedProduct: {},
         products: [],
         productsInCart: []
     },
     actions: {
+        async getProduct({ commit, state }, id) {
+            state.loading = !state.loading;
+            try {
+                const response = await axios.get(`${process.env.VUE_APP_URL_API}/Productos/${id}`);
+                state.loading = !state.loading;
+                commit('setSelectedProduct', response.data)  
+            } catch (e) {
+                console.log('Error Axios ->', e)
+            }
+        },
         async getProducts({ commit, state }) {
             state.loading = !state.loading;
             try {
@@ -91,6 +102,9 @@ export default new Vuex.Store({
         },
         deleteProduct(state, index) {
             state.products.splice(index, 1)
+        },
+        setSelectedProduct(state, detail) {
+            state.selectedProduct = detail
         }
     }
 })
