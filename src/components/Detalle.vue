@@ -2,56 +2,48 @@
   <section class="src-components-detalle">
     <h1 class="mt-2 detail">Detalle</h1>
     <hr /><br />
-    <div class="productDetail-details">
-      <img class="card-img-top" :src="detail.imagen" alt="Card image cap" />
+    <div v-if="loading">
+      <Loading />
+    </div>
+    <div v-else class="productDetail-details">
+      <img class="card-img-top" :src="selectedProduct.imagen" alt="Card image cap" />
       <div class="card text-center">
-        <div class="card-header"><h1>{{ detail.nombre }}</h1> </div>
+        <div class="card-header"><h1>{{ selectedProduct.nombre }}</h1> </div>
         <div class="card-body">
-          <h5 class="card-title"> {{ detail.precio | moneda }} </h5>
+          <h5 class="card-title"> {{ selectedProduct.precio | moneda }} </h5>
           <p class="card-text">
-            {{ detail.descripcion }}
+            {{ selectedProduct.descripcion }}
           </p>         
         </div>
-        <div class="card-footer text-muted"><i>Stock: {{ detail.stock }}</i></div>
+        <div class="card-footer text-muted"><i>Stock: {{ selectedProduct.stock }}</i></div>
       </div>
     </div>
   </section>
 </template>
 
 <script lang="js">
+  import { mapState } from 'vuex'
+  import Loading from './Loading.vue'
 
   export default  {
     name: 'src-components-detalle',
-     props: {
+    components : {
+      Loading
     },
-    mounted () {   
-      this.getProductDetail();
-    },
-    data () {
-      return {  
-        productsUrl: 'https://60af31f85b8c300017debe4c.mockapi.io/Productos/',
-        detail: {},      
-      }  
+    props: {},
+    mounted () {
+      this.getProducto()
     },
     methods: {
-      async getProductDetail() {
-        console.log('getProductDetail')
-        try {
-          let respuesta = await this.axios(this.productsUrl + this.$route.params.id)
-          console.log('AXIOS GET',respuesta.data)
-          this.detail = respuesta.data             
-        }
-        catch(error) {
-          console.log(error)
-        }
-      },
+      getProducto() {
+        this.$store.dispatch('getProduct', this.$route.params.id);
+      }
     },
-    computed: {
-
-    }
-}
-
-
+    computed: mapState([
+      'selectedProduct',
+      'loading'
+    ])
+  }
 </script>
 
 <style scoped lang="css">

@@ -1,5 +1,4 @@
 <template>
-
   <section class="src-components-productos">
     <div class="jumbotron">
       <h2>Listado de productos</h2>
@@ -117,54 +116,61 @@
           </vue-form>
         </div>
       </div>
-      <div v-if="products.length > 0">
-        <div class="table-responsive">
-          <table class="table">
-            <tr>
-              <th>Imagen</th>
-              <th>Nombre</th>
-              <th>Precio</th>
-              <th>Stock</th>
-              <th>Acción</th>
-            </tr>
-            <tr v-for="(product, index) in products" :key="index">
-              <td>
-                <img :src="product.imagen" width="50" :alt="product.nombre">
-              </td>
-              <td>{{ product.nombre }}</td>
-              <td>{{ product.precio | moneda }}</td>
-              <td>{{ product.stock }}</td>
-              <td>
-                <button class="btn btn-info ml-3" type="button" @click="editar(product)">
-                  Editar
-                </button>
-                <button class="btn btn-danger ml-3" type="button" @click="borrar(product.id)">
-                  Borrar
-                </button>
-              </td>
-            </tr>
-          </table>
-        </div>
+      <div v-if="loading">
+        <Loading />
       </div>
-      <h4 v-else class="alert alert-danger">No se encontraron productos</h4>
+      <div v-else>
+        <div v-if="products.length > 0">
+          <div class="table-responsive">
+            <table class="table">
+              <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acción</th>
+              </tr>
+              <tr v-for="(product, index) in products" :key="index">
+                <td>
+                  <img :src="product.imagen" width="50" :alt="product.nombre">
+                </td>
+                <td>{{ product.nombre }}</td>
+                <td>{{ product.precio | moneda }}</td>
+                <td>{{ product.stock }}</td>
+                <td>
+                  <button class="btn btn-info" type="button" @click="editar(product)">
+                    Editar
+                  </button>
+                  <button class="btn btn-danger ml-3" type="button" @click="deleteProducto(product.id)">
+                    Borrar
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h4 v-else class="alert alert-danger">No se encontraron productos</h4>
+      </div>
     </div>
   </section>
-
 </template>
 
 <script lang="js">
+  import { mapState } from 'vuex';
+  import Loading from './Loading.vue';
 
   export default  {
     name: 'src-components-productos',
     props: [],
+    components : {
+      Loading
+    },
     mounted () {
-      this.getProducts()
+      this.$store.state.products.length === 0 && this.getProductos()
     },
     data () {
       return {
         showForm: false,
-        productsUrl: 'https://60af31f85b8c300017debe4c.mockapi.io/Productos/',
-        products: [],
         formData : this.getInicialData(),
         formState: {},
         nombreLengthMin : 3,
@@ -177,12 +183,17 @@
       }
     },
     methods: {
-      async getProducts() {
-        this.axios(this.productsUrl)
-          .then(response => {
-            this.products = response.data
-          })
-          .catch(error => console.log('Error Axios ->', error))
+      getProductos() {
+        this.$store.dispatch('getProducts');
+      },
+      crearProducto(product) {
+        this.$store.dispatch('createProduct', product);
+      },
+      editarProducto(product) {
+        this.$store.dispatch('editProduct', product);
+      },
+      deleteProducto(index) {
+        this.$store.dispatch('deleteProduct', index);
       },
       agregarProducto(){
         this.showForm = true;
@@ -199,20 +210,8 @@
         }
       },
       enviar() {
-        let prod = {
-          id: this.formData.id,
-          nombre: this.formData.nombre,
-          imagen: this.formData.imagen,
-          precio: this.formData.precio,
-          stock: this.formData.stock,
-          descripcion: this.formData.descripcion
-        }
-        if(prod.id == 0){
-          this.crear(prod)
-        }
-        else{
-          this.modificar(prod)
-        }
+        const prod = { ...this.formData }
+        prod.id == 0 ? this.crearProducto(prod) : this.editarProducto(prod)
         this.formData = this.getInicialData()
         this.formState._reset()
       },
@@ -223,64 +222,19 @@
       },
       editar(product){
         this.showForm = true;
-        this.formData = {
-          id: product.id,
-          nombre: product.nombre,
-          imagen: product.imagen,
-          precio: product.precio,
-          stock: product.stock,
-          descripcion: product.descripcion
-        }
+        this.formData = { ...product }
         this.formState._reset()
       },
-      async borrar(id){
-        try {
-          let respuesta = await this.axios.delete(this.productsUrl+id)
-          let prod = respuesta.data
-          let indice = this.products.findIndex(p => p.id == prod.id)
-          this.products.splice(indice, 1)          
-        }
-        catch(error) {
-          console.log(error)
-        }
-      },
-      async crear(product){
-        try {
-          let respuesta = await this.axios.post(this.productsUrl, product, {'content-type':'application/json'})
-
-          let prod = respuesta.data
-          this.products.push(prod)
-        } catch (error) {
-          console.log(error);
-        }
-      },
-      async modificar(product){
-        try{
-          let id = product.id
-          let respuesta = await this.axios.put(this.productsUrl+id, product, {'content-type':'application/json'})
-          let prod = respuesta.data
-
-          let indice = this.products.findIndex(p => p.id == prod.id)
-          this.products.splice(indice, 1, prod)
-        }
-        catch(error){
-          console.log(error);
-        }
-      }
     },
-    computed: {
-      getColumns() {
-        return Object.keys(this.products[0])
-      }
-    }
-}
-
-
+    computed: mapState([
+      'products',
+      'loading'
+    ])
+  }
 </script>
 
 <style scoped lang="css">
   .src-components-productos {
 
   }
-
 </style>

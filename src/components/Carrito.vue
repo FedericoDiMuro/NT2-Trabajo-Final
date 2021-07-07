@@ -87,10 +87,10 @@
     },
     methods: {
       clearCart(){
-        this.$store.dispatch('clearCart')
+        this.$store.commit('clearCart')
       },
       deleteProduct(index){
-        this.$store.dispatch('deleteProduct', index)
+        this.$store.commit('deleteProductInCart', index)
       }
     },
     computed: {

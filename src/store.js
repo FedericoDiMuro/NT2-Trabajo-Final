@@ -1,27 +1,71 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
+        loading: false,
+        selectedProduct: {},
+        products: [],
         productsInCart: []
     },
     actions: {
-        addToCart({commit}, product){
-            commit('add', product)
+        async getProduct({ commit, state }, id) {
+            state.loading = !state.loading;
+            try {
+                const response = await axios.get(`${process.env.VUE_APP_URL_API}/Productos/${id}`);
+                state.loading = !state.loading;
+                commit('setSelectedProduct', response.data)  
+            } catch (e) {
+                console.log('Error Axios ->', e)
+            }
         },
-        clearCart({commit}){
-            commit('clear')
+        async getProducts({ commit, state }, search = '') {
+            state.loading = !state.loading;
+            try {
+                const response = await axios.get(`${process.env.VUE_APP_URL_API}/Productos/?search=${search}`);
+                state.loading = !state.loading;
+                commit('setProducts', response.data);
+            } catch (e) {
+                console.log('Error Axios ->', e)
+            }
         },
-        deleteProduct({commit}, index){
-            commit('delete', index)
+        async deleteProduct({ commit, state }, id) {
+            try {
+                const respuesta = await axios.delete(`${process.env.VUE_APP_URL_API}/Productos/${id}`)
+                const prod = respuesta.data
+                const index = state.products.findIndex(p => p.id == prod.id)
+                commit('deleteProduct', index)
+            } catch(e) {
+                console.log('Error Axios ->', e)
+            }
+        },
+        async createProduct({ commit }, product) {
+            try {
+                const respuesta = await axios.post(`${process.env.VUE_APP_URL_API}/Productos/`, product, {'content-type':'application/json'})
+                const prod = respuesta.data
+                commit('createProduct', prod)
+            } catch (e) {
+                console.log('Error Axios ->', e)
+            }
+        },
+        async editProduct({ commit, state }, product){
+            try{
+                const respuesta = await axios.put(`${process.env.VUE_APP_URL_API}/Productos/${product.id}`, product, {'content-type':'application/json'})
+                const prod = respuesta.data
+                const index = state.products.findIndex(p => p.id == prod.id)
+                commit('editProduct', { data: prod, index })
+            } catch (e){
+                console.log('Error Axios ->', e)
+            }
         }
     },
     mutations: {
-        add(state, product){
-            let prod = state.productsInCart.find(x => x.id == product.id);
-            var item = {
+        addToCart(state, product){
+            const prod = state.productsInCart.find(x => x.id == product.id);
+            const item = {
                 id: product.id,
                 name: product.nombre,
                 image: product.imagen,
@@ -30,19 +74,34 @@ export default new Vuex.Store({
                 cant: 1,
                 stockMax: product.stock
             }
-            if(!prod){
+
+            if (!prod) {
                 state.productsInCart.push(item)
-            }
-            else{
-                let index = state.productsInCart.indexOf(prod)
+            } else {
+                const index = state.productsInCart.indexOf(prod)
                 state.productsInCart[index].cant += 1
             }
         },
-        clear(state){
+        clearCart(state){
             state.productsInCart = []
         },
-        delete(state, index){
+        deleteProductInCart(state, index){
             state.productsInCart.splice(index, 1)
+        },
+        setProducts(state, products) {
+            state.products = products
+        },
+        createProduct(state, product) {
+            state.products.push(product)
+        },
+        editProduct(state, product) {
+            state.products.splice(product.index, 1, product.data)
+        },
+        deleteProduct(state, index) {
+            state.products.splice(index, 1)
+        },
+        setSelectedProduct(state, detail) {
+            state.selectedProduct = detail
         }
     }
 })
