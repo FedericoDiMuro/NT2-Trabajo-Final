@@ -7,6 +7,9 @@ Vue.use(Vuex)
 const URL_CART = 'https://60af31f85b8c300017debe4c.mockapi.io/Carrito/'
 export default new Vuex.Store({
     state: {
+        loading: false,
+        selectedProduct: {},
+        products: [],
         productsInCart: []
     },
     actions: {

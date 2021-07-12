@@ -1,4 +1,5 @@
 <template>
+
   <div
     class="card"
     style="max-width: 18rem; min-height: 30rem; max-height: 30rem"
@@ -42,12 +43,9 @@
 </template>
 
 <script lang="js">
-  import Detalle from './Detalle.vue'
   export default  {
     name: 'src-components-producto',
-    components : {
-      Detalle
-    },
+    components : {},
     props: {
       product: Object,
     },
@@ -71,14 +69,12 @@
           this.$store.dispatch('addProductInCart', product)
         }
         this.loadingCart = false
-      },
+      }
     },
     computed: {
 
     }
-}
-
-
+  }
 </script>
 
 <style scoped lang="css">
