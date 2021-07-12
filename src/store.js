@@ -4,6 +4,7 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
+const URL_CART = 'https://60af31f85b8c300017debe4c.mockapi.io/Carrito/'
 export default new Vuex.Store({
     state: {
         loading: false,
@@ -12,96 +13,51 @@ export default new Vuex.Store({
         productsInCart: []
     },
     actions: {
-        async getProduct({ commit, state }, id) {
-            state.loading = !state.loading;
-            try {
-                const response = await axios.get(`${process.env.VUE_APP_URL_API}/Productos/${id}`);
-                state.loading = !state.loading;
-                commit('setSelectedProduct', response.data)  
-            } catch (e) {
-                console.log('Error Axios ->', e)
-            }
+        async getCart({commit}){
+            let respuesta = await axios(URL_CART)
+            commit('getProducts', respuesta.data)
         },
-        async getProducts({ commit, state }, search = '') {
-            state.loading = !state.loading;
-            try {
-                const response = await axios.get(`${process.env.VUE_APP_URL_API}/Productos/?search=${search}`);
-                state.loading = !state.loading;
-                commit('setProducts', response.data);
-            } catch (e) {
-                console.log('Error Axios ->', e)
+        async addProductInCart({commit}, product){
+            var item = {
+                idProduct: product.id,
+                image: product.imagen,
+                name: product.nombre,
+                description: product.descripcion,
+                price: product.precio,
+                stockMax: product.stock,
+                cant: 1
             }
+
+            let respuesta = await axios.post(URL_CART, item, {'content-type':'application/json'})
+            let prod = respuesta.data
+            commit('addProduct', prod)
         },
-        async deleteProduct({ commit, state }, id) {
-            try {
-                const respuesta = await axios.delete(`${process.env.VUE_APP_URL_API}/Productos/${id}`)
-                const prod = respuesta.data
-                const index = state.products.findIndex(p => p.id == prod.id)
-                commit('deleteProduct', index)
-            } catch(e) {
-                console.log('Error Axios ->', e)
-            }
+        async updateProductInCart({commit}, product){
+            let id = product.id
+            let respuesta = await axios.put(URL_CART+id, product, {'content-type':'application/json'})
+            let prod = respuesta.data
+            commit('updateProduct', prod)
         },
-        async createProduct({ commit }, product) {
-            try {
-                const respuesta = await axios.post(`${process.env.VUE_APP_URL_API}/Productos/`, product, {'content-type':'application/json'})
-                const prod = respuesta.data
-                commit('createProduct', prod)
-            } catch (e) {
-                console.log('Error Axios ->', e)
-            }
-        },
-        async editProduct({ commit, state }, product){
-            try{
-                const respuesta = await axios.put(`${process.env.VUE_APP_URL_API}/Productos/${product.id}`, product, {'content-type':'application/json'})
-                const prod = respuesta.data
-                const index = state.products.findIndex(p => p.id == prod.id)
-                commit('editProduct', { data: prod, index })
-            } catch (e){
-                console.log('Error Axios ->', e)
-            }
+        async deleteProductInCart({commit}, id){
+            let respuesta = await axios.delete(URL_CART+id)
+            let prod = respuesta.data
+            commit('deleteProduct', prod)
         }
     },
     mutations: {
-        addToCart(state, product){
-            const prod = state.productsInCart.find(x => x.id == product.id);
-            const item = {
-                id: product.id,
-                name: product.nombre,
-                image: product.imagen,
-                description: product.descripcion,
-                price: product.precio,
-                cant: 1,
-                stockMax: product.stock
-            }
-
-            if (!prod) {
-                state.productsInCart.push(item)
-            } else {
-                const index = state.productsInCart.indexOf(prod)
-                state.productsInCart[index].cant += 1
-            }
+        getProducts(state, products){
+            state.productsInCart = products
         },
-        clearCart(state){
-            state.productsInCart = []
+        addProduct(state, product){
+            state.productsInCart.push(product)
         },
-        deleteProductInCart(state, index){
-            state.productsInCart.splice(index, 1)
+        updateProduct(state, prod){
+            let indice = state.productsInCart.findIndex(p => p.id == prod.id)
+            state.productsInCart.splice(indice, 1, prod)
         },
-        setProducts(state, products) {
-            state.products = products
-        },
-        createProduct(state, product) {
-            state.products.push(product)
-        },
-        editProduct(state, product) {
-            state.products.splice(product.index, 1, product.data)
-        },
-        deleteProduct(state, index) {
-            state.products.splice(index, 1)
-        },
-        setSelectedProduct(state, detail) {
-            state.selectedProduct = detail
+        deleteProduct(state, prod){
+            let indice = state.productsInCart.findIndex(p => p.id == prod.id)
+            state.productsInCart.splice(indice, 1)   
         }
     }
 })
