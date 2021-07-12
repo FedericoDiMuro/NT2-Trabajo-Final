@@ -22,6 +22,7 @@
     },
     props: [],
     mounted () {
+      this.$store.dispatch('getCart'),
       this.getProducts()
     },
     data () {
@@ -39,7 +40,7 @@
         catch(error) {
           console.log(error)
         }
-      },
+      }
     },
     computed: {
 
@@ -53,7 +54,5 @@
   .src-components-inicio {
 
   }
-  .jumbotron {
-  
-  }
+
 </style>

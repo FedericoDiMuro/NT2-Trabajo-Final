@@ -4,14 +4,14 @@
       <h1>Mi carrito</h1>
       <div class="row" v-if="getProductsInCart.length > 0">
         <div class="col-md-8">
-          <button class="btn btn-danger ml-3 float-right" @click="clearCart()">Limpiar carrito</button>
+          <button class="btn btn-danger ml-3 float-right" @click="clearCart(getProductsInCart)">Limpiar carrito</button>
           <br>
           <br>
           <div class=" media alert customCard" v-for="(product, index) in getProductsInCart" :key="index">
             <img :src="product.image" width="150" :alt="product.name">
             <div class="media-body ml-3">
-              <button class="btn btn-danger ml-3 float-right" @click="deleteProduct(index)">x</button>              
-              <router-link v-bind:to="'/Detalle/'+product.id">               
+              <button class="btn btn-danger ml-3 float-right" @click="deleteProduct(product.id)">x</button>              
+              <router-link v-bind:to="'/Detalle/'+product.idProduct">               
               <h5><u>{{ product.name }}</u></h5>
               </router-link>
               <br>
@@ -30,8 +30,8 @@
                   :max="product.stockMax"
                 >
                 <div class="input-group-append" id="button-addon4">
-                  <button class="btn btn-outline-secondary" type="button" v-on:click="product.cant--" :disabled="product.cant <= 1" >-</button>
-                  <button class="btn btn-outline-secondary" type="button" v-on:click="product.cant++" :disabled="product.cant == product.stockMax">+</button>
+                  <button class="btn btn-outline-secondary" type="button" v-on:click="downgradeCant(product)" :disabled="product.cant <= 1" >-</button>
+                  <button class="btn btn-outline-secondary" type="button" v-on:click="upgradeCant(product)" :disabled="product.cant == product.stockMax">+</button>
                 </div>
               </div>
             </div>
@@ -77,7 +77,7 @@
     name: 'src-components-carrito',
     props: [],
     mounted () {
-
+      this.$store.dispatch('getCart')
     },
     mixins: [miMixinLocal],
     data () {
@@ -86,11 +86,21 @@
       }
     },
     methods: {
-      clearCart(){
-        this.$store.dispatch('clearCart')
+      clearCart(products){
+        for (let index = 0; index < products.length; index++) {
+          this.$store.dispatch('deleteProductInCart', products[index].id)
+        }
       },
-      deleteProduct(index){
-        this.$store.dispatch('deleteProduct', index)
+      deleteProduct(id){
+        this.$store.dispatch('deleteProductInCart', id)
+      },
+      upgradeCant(product){
+        product.cant ++
+        this.$store.dispatch('updateProductInCart', product)
+      },
+      downgradeCant(product){
+        product.cant --
+        this.$store.dispatch('updateProductInCart', product)
       }
     },
     computed: {
@@ -106,10 +116,6 @@
 <style scoped lang="css">
   .src-components-carrito {
 
-  }
-  
-  .jumbotron {
-  
   }
 
   .customCard{

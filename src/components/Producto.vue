@@ -23,6 +23,7 @@
         style="float: right"
         class="btn btn-primary"
         type="button"
+        :disabled="loadingCart"
         @click="addToCart(product)"
       >
         Agregar al carrito
@@ -54,15 +55,26 @@
     },
     data () {
       return {
-        condition: false
+        condition: false,
+        loadingCart: false
       }
     },
     methods: {
       addToCart(product){
-        this.$store.dispatch('addToCart', product)
+        this.loadingCart = true
+        let prod = this.$store.state.productsInCart.find(x => x.idProduct == product.id)
+        if(prod){
+          prod.cant += 1
+          this.$store.dispatch('updateProductInCart', prod)
+        }
+        else{
+          this.$store.dispatch('addProductInCart', product)
+        }
+        this.loadingCart = false
       },
     },
     computed: {
+
     }
 }
 
@@ -73,6 +85,4 @@
 .src-components-producto {
 }
 
-.jumbotron {
-}
 </style>
