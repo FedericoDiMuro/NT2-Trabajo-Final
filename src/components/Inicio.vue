@@ -29,24 +29,11 @@
     },
     props: [],
     mounted () {
-      this.$store.dispatch('getCart'),
-      this.getProducts()
-    },
-    data () {
-      return {
-        productsUrl: 'https://60af31f85b8c300017debe4c.mockapi.io/Productos/',
-        products: []
-      }
+      this.$store.state.products.length === 0 && this.getProductos()
     },
     methods: {
-      async getProducts() {
-        try {
-          let response = await this.axios(this.productsUrl)
-          this.products = response.data
-        }
-        catch(error) {
-          console.log(error)
-        }
+      getProductos() {
+        this.$store.dispatch('getProducts');
       }
     },
     computed: mapState([
@@ -60,5 +47,4 @@
   .src-components-inicio {
 
   }
-
 </style>
