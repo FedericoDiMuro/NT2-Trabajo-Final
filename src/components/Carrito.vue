@@ -2,17 +2,20 @@
   <section class="src-components-carrito">
     <div class="jumbotron">
       <h1>Mi carrito</h1>
-      <div class="row" v-if="getProductsInCart.length > 0">
+      <div v-if="loading">
+        <Loading />
+      </div>
+      <div class="row" v-else-if="productsInCart.length > 0">
         <div class="col-md-8">
-          <button class="btn btn-danger ml-3 float-right" @click="clearCart(getProductsInCart)">Limpiar carrito</button>
+          <button class="btn btn-danger ml-3 float-right" @click="clearCart(productsInCart)">Limpiar carrito</button>
           <br>
           <br>
-          <div class=" media alert customCard" v-for="(product, index) in getProductsInCart" :key="index">
+          <div class=" media alert customCard" v-for="(product, index) in productsInCart" :key="index">
             <img :src="product.image" width="150" :alt="product.name">
             <div class="media-body ml-3">
               <button class="btn btn-danger ml-3 float-right" @click="deleteProduct(product.id)">x</button>              
               <router-link v-bind:to="'/Detalle/'+product.idProduct">               
-              <h5><u>{{ product.name }}</u></h5>
+                <h5><u>{{ product.name }}</u></h5>
               </router-link>
               <br>
               <p>{{product.description}}</p>
@@ -54,7 +57,7 @@
               </div>
               <hr>
               <div class="text-center">
-                <button class="btn btn-success">Realizar compra</button>
+                <router-link to="/Compra" tag="button" class="btn btn-success">Realizar compra</router-link>
               </div>          
             </div>
           </div>
@@ -71,13 +74,17 @@
 
 <script lang="js">
   import { miMixinLocal } from '../localMixins'
-
+  import { mapState } from 'vuex';
+  import Loading from './Loading.vue';
 
   export default  {
     name: 'src-components-carrito',
     props: [],
+    components : {
+      Loading
+    },
     mounted () {
-      this.$store.dispatch('getCart')
+      this.$store.state.productsInCart.length === 0 && this.$store.dispatch('getCart')
     },
     mixins: [miMixinLocal],
     data () {
@@ -103,14 +110,11 @@
         this.$store.dispatch('updateProductInCart', product)
       }
     },
-    computed: {
-      getProductsInCart(){
-        return this.$store.state.productsInCart
-      },
-    }
+    computed: mapState([
+      'productsInCart',
+      'loading'
+    ])
 }
-
-
 </script>
 
 <style scoped lang="css">

@@ -61,36 +61,74 @@ export default new Vuex.Store({
                 console.log('Error Axios ->', e)
             }
         },
-        async getCart({commit}){
-            let respuesta = await axios(`${process.env.VUE_APP_URL_API}/Carrito/`)
-            commit('getCartProducts', respuesta.data)
+        async getCart({ commit, state }){
+            state.loading = !state.loading;
+            try {
+                const respuesta = await axios(`${process.env.VUE_APP_URL_API}/Carrito/`)
+                commit('getCartProducts', respuesta.data)
+                state.loading = !state.loading;
+            } catch(e) {
+                console.log('Error Axios ->', e)
+            }
         },
         async addProductInCart({commit}, product){
-            var item = {
-                idProduct: product.id,
-                image: product.imagen,
-                name: product.nombre,
-                description: product.descripcion,
-                price: product.precio,
-                stockMax: product.stock,
-                cant: 1
-            }
+            try {
+                const item = {
+                    idProduct: product.id,
+                    image: product.imagen,
+                    name: product.nombre,
+                    description: product.descripcion,
+                    price: product.precio,
+                    stockMax: product.stock,
+                    cant: 1
+                }
 
-            let respuesta = await axios.post(`${process.env.VUE_APP_URL_API}/Carrito/`, item, {'content-type':'application/json'})
-            let prod = respuesta.data
-            commit('addCartProduct', prod)
+                const respuesta = await axios.post(`${process.env.VUE_APP_URL_API}/Carrito/`, item, {'content-type':'application/json'})
+                const prod = respuesta.data
+                commit('addCartProduct', prod)
+            } catch(e) {
+                console.log('Error Axios ->', e)
+            }
         },
         async updateProductInCart({commit}, product){
-            let id = product.id
-            let respuesta = await axios.put(`${process.env.VUE_APP_URL_API}/Carrito/${id}`, product, {'content-type':'application/json'})
-            let prod = respuesta.data
-            commit('updateCartProduct', prod)
+            try {
+                const id = product.id
+                const respuesta = await axios.put(`${process.env.VUE_APP_URL_API}/Carrito/${id}`, product, {'content-type':'application/json'})
+                const prod = respuesta.data
+                commit('updateCartProduct', prod)
+            } catch(e) {
+                console.log('Error Axios ->', e)
+            }
         },
         async deleteProductInCart({commit}, id){
-            let respuesta = await axios.delete(`${process.env.VUE_APP_URL_API}/Carrito/${id}`)
-            let prod = respuesta.data
-            commit('deleteCartProduct', prod)
-        }
+            try {
+                const respuesta = await axios.delete(`${process.env.VUE_APP_URL_API}/Carrito/${id}`)
+                const prod = respuesta.data
+                commit('deleteCartProduct', prod)
+            } catch(e) {
+                console.log('Error Axios ->', e)
+            }
+        },
+        async purchaseProducts({ state, commit, dispatch }){
+            try {
+                const promises = [];
+                for (const product of state.productsInCart) {
+                    promises.push(axios.delete(`${process.env.VUE_APP_URL_API}/Carrito/${product.id}`));
+                }
+
+                await Promise.all(promises).then((data) => {
+                    data.map(response => {
+                        const newProduct = { ...response.data, stock: response.data.stockMax - 1}
+                        dispatch('editProduct', newProduct)
+                        commit('deleteCartProduct', response.data)
+                    })
+                })
+
+                alert("Los productos fueron comprados!");
+            } catch(e) {
+                console.log('Error Axios ->', e)
+            }
+        },
     },
     mutations: {
         getCartProducts(state, products){

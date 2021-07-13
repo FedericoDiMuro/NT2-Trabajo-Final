@@ -5,6 +5,7 @@ import Inicio from './components/Inicio.vue'
 import Carrito from './components/Carrito.vue'
 import Productos from './components/Productos.vue'
 import Detalle from './components/Detalle.vue'
+import Compra from './components/Compra.vue'
 
 Vue.use(VueRouter)
 
@@ -17,5 +18,6 @@ export const router = new VueRouter({
         { path: '/Carrito', component: Carrito },
         { path: '/Productos', component: Productos },
         { path: '/Detalle/:id', name: 'Detalle',component: Detalle },
+        { path: '/Compra', component: Compra }
     ]
 })
