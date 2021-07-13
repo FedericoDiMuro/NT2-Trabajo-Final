@@ -40,11 +40,14 @@
                         class="form-control"
                         name="email"
                         autocomplete="off"
-                        v-model.number="formData.email"
+                        v-model.trim="formData.email"
                         required
                     >
                     <field-messages name="email" show="$dirty">
                         <div slot="required" class="alert alert-danger mt-1">Campo requerido</div>
+                        <div v-if="isEmailInvalid(formData.email) == true" class="alert alert-danger mt-1">
+                            Email invalido, intente otro!
+                        </div>
                     </field-messages>
                     </validate>
                     <br>
@@ -57,12 +60,28 @@
                         name="dni"
                         class="form-control"
                         autocomplete="off"
-                        v-model.trim="formData.dni"
-                        placeholder="http://placeimg.com/640/480/business"
+                        v-model.number="formData.dni"
                         :minlength="dniLengthMin"
                         required
                     >
                     <field-messages name="dni" show="$dirty">
+                        <div slot="required" class="alert alert-danger mt-1">Campo requerido</div>
+                    </field-messages>
+                    </validate>
+                    <br>
+
+                    <validate tag="div">
+                    <label for="address">Direccion</label>
+                    <input 
+                        type="text" 
+                        id="address" 
+                        name="address"
+                        class="form-control"
+                        autocomplete="off"
+                        v-model.trim="formData.address"
+                        required
+                    >
+                    <field-messages name="address" show="$dirty">
                         <div slot="required" class="alert alert-danger mt-1">Campo requerido</div>
                     </field-messages>
                     </validate>
@@ -76,7 +95,7 @@
                         class="form-control"
                         name="card"
                         autocomplete="off"
-                        v-model.number="formData.card"
+                        v-model.trim="formData.card"
                         placeholder="0000000000000000"
                         required
                     >
@@ -159,8 +178,8 @@
             formData : this.getInicialData(),
             formState: {},
             nombreLengthMin : 3,
-            nombreLengthMax: 35,
-            dniLengthMin: 1
+            nombreLengthMax: 50,
+            dniLengthMin: 5
         }
     },
     methods: {
@@ -170,8 +189,13 @@
                 email: '',
                 dni: 0,
                 card: '',
+                address: '',
                 securityCode: 0
             }
+        },
+        isEmailInvalid(text) {
+            const re = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+            return !new RegExp(re).test(text);
         },
         comprar() {
             this.$store.dispatch('purchaseProducts')
